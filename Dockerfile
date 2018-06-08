@@ -20,32 +20,34 @@ RUN curl -L "$SPROUT_VKEY_URL" -o "$SPROUT_VKEY_NAME" && \
         > "$SPROUT_VKEY_SHA256_FILE" && \
     sha256sum -c "$SPROUT_VKEY_SHA256_FILE"
 
-ARG ZENCASH_GIT_URL=https://github.com/ZencashOfficial/zen.git
-ARG ZENCASH_GIT_BRANCH=master
-ARG ZENCASH_GIT_COMMIT=9116ad51b2489ea36a48c786d9a39acb24e23264
 ARG BUILD_DEPENDENCIES=" \
-    autoconf \
-    automake \
-    bsdmainutils \
-    build-essential \
-    g++-multilib \
-    pkg-config \
-    libc6-dev \
-    libtool \
-    m4 \
-    ncurses-dev \
-    python \
-    unzip \
-    wget \
-    zlib1g-dev \
-    libzmq5-dev \
+        autoconf \
+        automake \
+        bsdmainutils \
+        build-essential \
+        g++-multilib \
+        pkg-config \
+        libc6-dev \
+        libtool \
+        m4 \
+        ncurses-dev \
+        python \
+        unzip \
+        wget \
+        zlib1g-dev \
+        libzmq5-dev \
 "
 
 RUN apt-get update && \
-    apt-get -y install $BUILD_DEPENDENCIES && \
-    git clone -b "$ZENCASH_GIT_BRANCH" --single-branch "$ZENCASH_GIT_URL" && \
+    apt-get -y install $BUILD_DEPENDENCIES
+
+ARG ZENCASH_GIT_URL=https://github.com/ZencashOfficial/zen.git
+ARG ZENCASH_GIT_BRANCH=master
+ARG ZENCASH_GIT_COMMIT=9116ad51b2489ea36a48c786d9a39acb24e23264
+
+RUN git clone -b "$GIT_BRANCH" --single-branch "$GIT_URL" && \
     cd zen && \
-    git reset --hard "$ZENCASH_GIT_COMMIT" && \
+    git reset --hard "$GIT_COMMIT" && \
     ./zcutil/build.sh -j$(nproc)
 
 
@@ -53,17 +55,17 @@ FROM debian:stretch
 LABEL maintainer="skinlayers@gmail.com"
 
 ARG RUNTIME_DEPENDENCIES=" \
-    libgomp1 \
-    libzmq5 \
+        libgomp1 \
+        libzmq5 \
 "
 
 COPY --from=zencash-builder /sprout-proving.key /
 COPY --from=zencash-builder /sprout-verifying.key /
 COPY ./docker-entrypoint.sh /
 
-ARG ZENCASH_BUILDER_PATH=/zen/src
-COPY --from=zencash-builder $ZENCASH_BUILDER_PATH/zen-cli /usr/local/bin
-COPY --from=zencash-builder $ZENCASH_BUILDER_PATH/zend /usr/local/bin
+ARG BUILDER_PATH=/zen/src
+COPY --from=zencash-builder $BUILDER_PATH/zen-cli /usr/local/bin
+COPY --from=zencash-builder $BUILDER_PATH/zend /usr/local/bin
 
 RUN set -eu && \
     adduser --system -u 400 --group --home /data zencash && \
@@ -75,7 +77,13 @@ RUN set -eu && \
 
 COPY --from=zencash-builder /zen/contrib/debian/examples/zen.conf /data/.zen
 
-RUN chmod 0600 /data/.zen/zen.conf && \
+RUN { \
+        echo ''; \
+        echo '# Required for backuping up the wallet'; \
+        echo ''; \
+        echo 'exportdir=/data'; \
+    } >> /data/.zen/zen.conf
+    chmod 0600 /data/.zen/zen.conf && \
     chown -R zencash:zencash /data/.zen
 
 USER zencash
@@ -85,11 +93,6 @@ WORKDIR /data
 RUN mkdir -m 0700 .zcash-params && \
     ln -s /sprout-proving.key .zcash-params/sprout-proving.key && \
     ln -s /sprout-verifying.key .zcash-params/sprout-verifying.key
-    #{ \
-    #    echo 'rpcport=8231'; \
-    #    echo 'port=9033'; \
-    #    echo 'exportdir=/data'; \
-    #} > /data/.zen/zen.conf
 
 VOLUME ["/data"]
 
