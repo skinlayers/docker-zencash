@@ -82,7 +82,7 @@ RUN { \
         echo '# Required for backuping up the wallet'; \
         echo ''; \
         echo 'exportdir=/data'; \
-    } >> /data/.zen/zen.conf
+    } >> /data/.zen/zen.conf && \
     chmod 0600 /data/.zen/zen.conf && \
     chown -R zencash:zencash /data/.zen
 
