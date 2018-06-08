@@ -41,9 +41,9 @@ ARG BUILD_DEPENDENCIES=" \
 RUN apt-get update && \
     apt-get -y install $BUILD_DEPENDENCIES
 
-ARG ZENCASH_GIT_URL=https://github.com/ZencashOfficial/zen.git
-ARG ZENCASH_GIT_BRANCH=master
-ARG ZENCASH_GIT_COMMIT=9116ad51b2489ea36a48c786d9a39acb24e23264
+ARG GIT_URL=https://github.com/ZencashOfficial/zen.git
+ARG GIT_BRANCH=master
+ARG GIT_COMMIT=9116ad51b2489ea36a48c786d9a39acb24e23264
 
 RUN git clone -b "$GIT_BRANCH" --single-branch "$GIT_URL" && \
     cd zen && \
