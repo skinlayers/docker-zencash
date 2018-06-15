@@ -1,4 +1,4 @@
-FROM buildpack-deps:stretch as zencash-builder
+FROM buildpack-deps:bionic as zencash-builder
 LABEL maintainer="skinlayers@gmail.com"
 
 ARG SPROUT_PKEY_NAME=sprout-proving.key
@@ -51,7 +51,7 @@ RUN git clone -b "$GIT_BRANCH" --single-branch "$GIT_URL" && \
     ./zcutil/build.sh -j$(nproc)
 
 
-FROM debian:stretch
+FROM ubuntu:bionic
 LABEL maintainer="skinlayers@gmail.com"
 
 ARG RUNTIME_DEPENDENCIES=" \
