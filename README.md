@@ -1,4 +1,4 @@
-# docker-btcprivate
+# docker-zencash
 
 ## Build
 ```
