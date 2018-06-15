@@ -15,7 +15,7 @@ docker run \
     -v zencash-data:/data \
     -p 8231:8231 \
     -p 9033:9033 \
-    zencash:2.0.11
+    zencash:latest
 ```
 
 ## List Commands (From Host)
