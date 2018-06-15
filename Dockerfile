@@ -1,4 +1,4 @@
-FROM skinlayers/docker-zcash-sprout-keys as zencash-builder
+FROM buildpack-deps:bionic as zencash-builder
 LABEL maintainer="skinlayers@gmail.com"
 
 ARG BUILD_DEPENDENCIES=" \
