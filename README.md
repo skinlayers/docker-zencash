@@ -1,8 +1,8 @@
-# docker-btcprivate
+# docker-zencash
 
 ## Build
 ```
-docker build -t zencash:2.0.11 .
+docker build -t zencash:latest .
 ```
 
 ## Run
