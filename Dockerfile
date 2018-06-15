@@ -43,7 +43,7 @@ RUN apt-get update && \
 
 ARG GIT_URL=https://github.com/ZencashOfficial/zen.git
 ARG GIT_BRANCH=master
-ARG GIT_COMMIT=9116ad51b2489ea36a48c786d9a39acb24e23264
+ARG GIT_COMMIT=58b51a6093b7ea788903858326f43ba8ebb6a8ae
 
 RUN git clone -b "$GIT_BRANCH" --single-branch "$GIT_URL" && \
     cd zen && \
