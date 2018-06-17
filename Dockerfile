@@ -29,7 +29,7 @@ ARG GIT_COMMIT=9116ad51b2489ea36a48c786d9a39acb24e23264
 RUN git clone -b "$GIT_BRANCH" --single-branch "$GIT_URL" && \
     cd zen && \
     git reset --hard "$GIT_COMMIT" && \
-    ./zcutil/build.sh
+    ./zcutil/build.sh -j$(nproc)
 
 
 FROM ubuntu:bionic
