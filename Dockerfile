@@ -1,4 +1,4 @@
-FROM skinlayers/docker-zcash-sprout-keys as zencash-builder
+FROM buildpack-deps:bionic as zencash-builder
 LABEL maintainer="skinlayers@gmail.com"
 
 ARG BUILD_DEPENDENCIES=" \
@@ -40,8 +40,8 @@ ARG RUNTIME_DEPENDENCIES=" \
         libzmq5 \
 "
 
-COPY --from=zencash-builder /sprout-proving.key /
-COPY --from=zencash-builder /sprout-verifying.key /
+COPY --from=skinlayers/docker-zcash-sprout-keys /sprout-proving.key /
+COPY --from=skinlayers/docker-zcash-sprout-keys /sprout-verifying.key /
 COPY ./docker-entrypoint.sh /
 
 ARG BUILDER_PATH=/zen/src
