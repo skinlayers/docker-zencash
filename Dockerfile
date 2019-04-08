@@ -14,7 +14,7 @@ ARG BUILD_DEPENDENCIES=" \
         ncurses-dev \
         python \
         unzip \
-        wget \
+        curl \
         zlib1g-dev \
         libzmq5-dev \
 "
@@ -39,6 +39,9 @@ ARG RUNTIME_DEPENDENCIES=" \
 
 COPY --from=skinlayers/docker-zcash-sprout-keys /sprout-proving.key /
 COPY --from=skinlayers/docker-zcash-sprout-keys /sprout-verifying.key /
+COPY --from=skinlayers/docker-zcash-sprout-keys /sapling-spend.params /
+COPY --from=skinlayers/docker-zcash-sprout-keys /sapling-output.params /
+COPY --from=skinlayers/docker-zcash-sprout-keys /sprout-groth16.params /
 COPY ./docker-entrypoint.sh /
 
 ARG BUILDER_PATH=/zen/src
@@ -70,11 +73,14 @@ WORKDIR /data
 
 RUN mkdir -m 0700 .zcash-params && \
     ln -s /sprout-proving.key .zcash-params/sprout-proving.key && \
-    ln -s /sprout-verifying.key .zcash-params/sprout-verifying.key
+    ln -s /sprout-verifying.key .zcash-params/sprout-verifying.key && \
+    ln -s /sapling-spend.params .zcash-params/sapling-spend.params && \
+    ln -s /sapling-output.params .zcash-params/sapling-output.params && \
+    ln -s /sprout-groth16.params .zcash-params/sprout-groth16.params
 
 VOLUME ["/data"]
 
-EXPOSE 8231 9033
+EXPOSE 9033 18231
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/usr/local/bin/zend", "-printtoconsole"]
